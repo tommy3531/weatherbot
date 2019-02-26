@@ -16,22 +16,22 @@ module.exports = function(controller) {
       bot.reply(message, trends(message));
     }
   );
-  controller.hears(
-    ["^commad (.*)", "^commad"],
-    "direct_mention,direct_message,ambient",
-    function(bot, message) {
-      bot.reply(
-        message,
-        "weather <zipcode>" +
-          "\n" +
-          "returns current weather for zipcode" +
-          "\n\n" +
-          "fiveday <zipcode>" +
-          "\n" +
-          "returns current weather for next five days (Work in progress)"
-      );
-    }
-  );
+  // controller.hears(
+  //   ["^commad (.*)", "^commad"],
+  //   "direct_mention,direct_message,ambient",
+  //   function(bot, message) {
+  //     bot.reply(
+  //       message,
+  //       "weather <zipcode>" +
+  //         "\n" +
+  //         "returns current weather for zipcode" +
+  //         "\n\n" +
+  //         "fiveday <zipcode>" +
+  //         "\n" +
+  //         "returns current weather for next five days (Work in progress)"
+  //     );
+  //   }
+  // );
 
   controller.hears(
     ["^weather (.*)", "^weather"],
