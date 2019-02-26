@@ -1,4 +1,5 @@
-var request = require("request");
+const request = require("request");
+const googleTrends = require("google-trends-api");
 
 module.exports = function(controller) {
   controller.hears(
@@ -9,13 +10,26 @@ module.exports = function(controller) {
     }
   );
   controller.hears(
+    ["^daily (.*)", "^daily"],
+    "direct_message,direct_mention,ambient",
+    function(bot, message) {
+      bot.reply(message, trends(message));
+    }
+  );
+  controller.hears(
     ["^commad (.*)", "^commad"],
     "direct_mention,direct_message,ambient",
     function(bot, message) {
-      bot.reply(message, "weather <zipcode>" + "\n" +
-                         "returns current weather for zipcode" + "\n\n" +
-                         "fiveday <zipcode>" + "\n" + 
-                         "returns current weather for next five days (Work in progress)");
+      bot.reply(
+        message,
+        "weather <zipcode>" +
+          "\n" +
+          "returns current weather for zipcode" +
+          "\n\n" +
+          "fiveday <zipcode>" +
+          "\n" +
+          "returns current weather for next five days (Work in progress)"
+      );
     }
   );
 
@@ -37,7 +51,7 @@ module.exports = function(controller) {
               bot.reply(message, {
                 title: "Weather for " + message.match[1],
                 text: "Local condition is: " + weather.main + "\n" + ":sunny:",
-                icon_emoji: ":sunny:",
+                icon_emoji: ":sunny:"
               });
             }
           }
@@ -55,4 +69,25 @@ function getWeatherUndergroundAPIUrl(message) {
     message.match[1] +
     ",us&&APPID=7a93048745e5894efd2c26cf0f9395c6";
   return url;
+}
+
+function trends(message) {
+  googleTrends.realTimeTrends(
+    {
+      geo: "US",
+      category: "all"
+    },
+    function(err, results) {
+      if (err) {
+        console.log("oh no error!", err);
+      } else {
+        var data = JSON.parse(results);
+        var trend = data.storySummaries.trendingStories;
+        for (let item in trend[0].articles[0]) {
+          var string = JSON.stringify(item);
+          console.log(item.url);
+        }
+      }
+    }
+  );
 }
